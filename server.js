@@ -58,7 +58,7 @@ app.get('/api/roles', (req, res) => {
 // view all employees
 app.get('/api/employees', (req, res) => {
 
-    const sql = `SELECT first_name, last_name, role.title, department.name, role.salary, manager_id FROM employee INNER JOIN role ON role_id = role.id INNER JOIN department ON department_id = department.id;`
+    const sql = `SELECT first_name, last_name, department.name AS department, role.title AS role, role.salary, manager_id FROM employee INNER JOIN role ON role_id = role.id INNER JOIN department ON department_id = department.id;`
 
     db.query(sql, (err, rows) => {
         if (err) {
