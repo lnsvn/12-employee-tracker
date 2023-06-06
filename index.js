@@ -25,7 +25,7 @@ const startApplication = () => {
             ],
         }
     ]).then((data) => {
-        // uses switch statment to select one of many functions to be executed
+        // uses switch statment to select one of many functions to be executed based on answer choice
         switch (data.db_nav) {
             case 'View all departments':
                 viewAllDepartments();
