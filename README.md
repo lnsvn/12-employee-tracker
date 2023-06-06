@@ -19,7 +19,7 @@ Employee Tracker is a command line application that business owner can use to or
 
 ## Visual
 
-![alt](image)(link)
+[![](./image/app-demo.png)](https://drive.google.com/file/d/1NRTCc2vodPsNjbFyHbKPlHb24KWZGzCi/view)
 
 ## Usage
 
