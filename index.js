@@ -2,8 +2,8 @@ const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 
-const application = () => {
-    console.log('\u2554\u2550\u2557\u250C\u252C\u2510\u250C\u2500\u2510\u252C  \u250C\u2500\u2510\u252C \u252C\u250C\u2500\u2510\u250C\u2500\u2510  \r\n\u2551\u2563 \u2502\u2502\u2502\u251C\u2500\u2518\u2502  \u2502 \u2502\u2514\u252C\u2518\u251C\u2524 \u251C\u2524   \r\n\u255A\u2550\u255D\u2534 \u2534\u2534  \u2534\u2500\u2518\u2514\u2500\u2518 \u2534 \u2514\u2500\u2518\u2514\u2500\u2518  \r\n\u2554\u2566\u2557\u250C\u2500\u2510\u250C\u2510\u250C\u250C\u2500\u2510\u250C\u2500\u2510\u250C\u2500\u2510\u252C\u2500\u2510     \r\n\u2551\u2551\u2551\u251C\u2500\u2524\u2502\u2502\u2502\u251C\u2500\u2524\u2502 \u252C\u251C\u2524 \u251C\u252C\u2518     \r\n\u2569 \u2569\u2534 \u2534\u2518\u2514\u2518\u2534 \u2534\u2514\u2500\u2518\u2514\u2500\u2518\u2534\u2514\u2500    ')
+const startApplication = () => {
+    console.log('\r\n\u2554\u2550\u2557\u250C\u252C\u2510\u250C\u2500\u2510\u252C  \u250C\u2500\u2510\u252C \u252C\u250C\u2500\u2510\u250C\u2500\u2510\r\n\u2551\u2563 \u2502\u2502\u2502\u251C\u2500\u2518\u2502  \u2502 \u2502\u2514\u252C\u2518\u251C\u2524 \u251C\u2524 \r\n\u255A\u2550\u255D\u2534 \u2534\u2534  \u2534\u2500\u2518\u2514\u2500\u2518 \u2534 \u2514\u2500\u2518\u2514\u2500\u2518\r\n\u2554\u2566\u2557\u252C\u2500\u2510\u250C\u2500\u2510\u250C\u2500\u2510\u252C\u250C\u2500\u250C\u2500\u2510\u252C\u2500\u2510   \r\n \u2551 \u251C\u252C\u2518\u251C\u2500\u2524\u2502  \u251C\u2534\u2510\u251C\u2524 \u251C\u252C\u2518   \r\n \u2569 \u2534\u2514\u2500\u2534 \u2534\u2514\u2500\u2518\u2534 \u2534\u2514\u2500\u2518\u2534\u2514\u2500   \r\n')
     inquirer.prompt([
         {
             type: 'list',
@@ -16,7 +16,8 @@ const application = () => {
                 'Add a department',
                 'Add a role',
                 'Add an employee',
-                'Update an employee\'s role'
+                'Update an employee\'s role',
+                'Quit'
             ],
         }
     ]).then((data) => {
@@ -42,6 +43,9 @@ const application = () => {
             case 'Update an employee\'s role':
                 updateEmployee();
                 break;
+            case 'Quit':
+                quitApplication();
+                break;
         }
     })
 }
@@ -62,7 +66,7 @@ const viewAllDepartments = async () => {
 
     console.table([...data[0]]);
 
-    application();
+    startApplication();
 };
 
 // view all roles
@@ -81,7 +85,7 @@ const viewAllRoles = async () => {
 
     console.table([...data[0]]);
 
-    application();
+    startApplication();
 };
 
 // view all employees
@@ -100,7 +104,7 @@ const viewAllEmployees = async () => {
 
     console.table([...data[0]]);
 
-    application();
+    startApplication();
 };
 
 // add department
@@ -132,7 +136,7 @@ const addDepartment = async () => {
 
     console.log(`${department.name} added to employee_db`);
 
-    application();
+    startApplication();
 };
 
 // add role
@@ -178,7 +182,7 @@ const addRole = async () => {
     
     console.log(`${role.title} added to employee_db`);
 
-    application();
+    startApplication();
 };
 
 // add employee
@@ -233,7 +237,7 @@ const addEmployee = async () => {
     
     console.log(`${employee.first_name} ${employee.last_name} added to employee_db`);
 
-    application();
+    startApplication();
 };
 
 // update employee role
@@ -277,7 +281,12 @@ const updateEmployee = async () => {
     
     console.log(`${employee.first_name} ${employee.last_name}'s role updated`);
 
-    application();
+    startApplication();
 };
 
-application();
+const quitApplication = async () => {
+    console.log('You have exited Employee Tracker.');
+    process.exit();
+};
+
+startApplication();
