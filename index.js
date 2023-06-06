@@ -16,7 +16,7 @@ const application = () => {
                 'Add a department',
                 'Add a role',
                 'Add an employee',
-                'Update an employee role'
+                'Update an employee\'s role'
             ],
         }
     ]).then((data) => {
@@ -38,6 +38,9 @@ const application = () => {
                 break;
             case 'Add an employee':
                 addEmployee();
+                break;
+            case 'Update an employee\'s role':
+                updateEmployee();
                 break;
         }
     })
@@ -234,5 +237,47 @@ const addEmployee = async () => {
 };
 
 // update employee role
+const updateEmployee = async () => {
+    const db = await mysql.createConnection(
+        {
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'employee_db'
+        }
+    );
+
+    const sqlEmployee = await db.query(`SELECT id, first_name, last_name FROM employee`);
+    const listEmployees = await sqlEmployee[0].map(({ id, first_name, last_name }) => ({ name: first_name + ' ' + last_name, value: id }));
+
+    const sqlRole = await db.query('SELECT id, title FROM role');
+    const listRoles = await sqlRole[0].map(({ id, title }) => ({ name: title, value: id }));
+
+    const questions = [
+        {
+            type: 'list',
+            name: 'employee',
+            message: 'Which employee would you like to update?',
+            choices: listEmployees
+        },
+        {
+            type: 'list',
+            name: 'role',
+            message: 'What is this employee\'s new role?',
+            choices: listRoles
+        },
+    ]
+    
+    const updateEmployee = await inquirer.prompt(questions);
+
+    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+    const params = [updateEmployee.role, updateEmployee.employee];
+
+    await db.query(sql, params);
+    
+    console.log(`${employee.first_name} ${employee.last_name}'s role updated`);
+
+    application();
+};
 
 application();
