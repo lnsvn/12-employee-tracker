@@ -80,7 +80,7 @@ const viewAllRoles = async () => {
         }
     ); 
 
-    const sql = `SELECT title, role.id, department.name AS department, salary FROM role INNER JOIN department ON department_id = department.id ORDER BY department.name`;
+    const sql = `SELECT title, role.id, department.name AS department, salary FROM role INNER JOIN department ON department_id = department.id`;
     const data = await db.query(sql);
 
     console.table([...data[0]]);
@@ -99,7 +99,7 @@ const viewAllEmployees = async () => {
         }
     );
 
-    const sql = `SELECT first_name, last_name, department.name AS department, role.title AS role, role.salary, manager_id FROM employee INNER JOIN role ON role_id = role.id INNER JOIN department ON department_id = department.id;`;
+    const sql = `SELECT e1.id, e1.first_name, e1.last_name, role.title AS role, department.name AS department, role.salary, CONCAT(e2.first_name, " ", e2.last_name) AS manager FROM employee INNER JOIN role ON role_id = role.id INNER JOIN department ON department_id = department.id INNER JOIN employee e1 ON employee.id = e1.id LEFT JOIN employee e2 ON employee.manager_id = e2.id ORDER BY employee.id;`;
     const data = await db.query(sql);
 
     console.table([...data[0]]);
@@ -279,7 +279,7 @@ const updateEmployee = async () => {
 
     await db.query(sql, params);
     
-    console.log(`${employee.first_name} ${employee.last_name}'s role updated`);
+    console.log(`Employee ${updateEmployee.employee}'s role updated`);
 
     startApplication();
 };
