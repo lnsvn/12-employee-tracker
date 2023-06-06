@@ -1,12 +1,16 @@
+// THIS PAGE IS PURELY FOR ROUTE TESTING WITH INSOMNIA
+// imports 
 const express = require('express');
 const mysql = require('mysql2');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+// express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// connect to database
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -21,7 +25,6 @@ const db = mysql.createConnection(
 
 // view all departments
 app.get('/api/departments', (req, res) => {
-
     const sql = `SELECT name, id FROM department`;
 
     db.query(sql, (err, rows) => {
@@ -38,9 +41,6 @@ app.get('/api/departments', (req, res) => {
 
 // view all roles
 app.get('/api/roles', (req, res) => {
-
-    // const sql = `SELECT department.name AS department, role.title, role.id, role.salary FROM role LEFT JOIN department ON role.department_id = department.id ORDER BY department.name`;
-
     const sql = `SELECT title, role.id, department.name AS department, salary FROM role INNER JOIN department ON department_id = department.id ORDER BY department.name`;
 
     db.query(sql, (err, rows) => {
@@ -57,7 +57,6 @@ app.get('/api/roles', (req, res) => {
 
 // view all employees
 app.get('/api/employees', (req, res) => {
-
     const sql = `SELECT first_name, last_name, department.name AS department, role.title AS role, role.salary, manager_id FROM employee INNER JOIN role ON role_id = role.id INNER JOIN department ON department_id = department.id;`
 
     db.query(sql, (err, rows) => {
@@ -75,7 +74,6 @@ app.get('/api/employees', (req, res) => {
 
 // add a department
 app.post('/api/new-department', ({ body }, res) => {
-    
     const sql = `INSERT INTO department (name)
     VALUES (?)`;
     const params = [body.name];
@@ -94,7 +92,6 @@ app.post('/api/new-department', ({ body }, res) => {
 
 // add a role
 app.post('/api/new-role', ({ body }, res) => {
-
     const sql = `INSERT INTO role (title, salary, department_id)
     VALUES (?, ?, ?)`;
     const params = [body.title, body.salary, body.department_id];
@@ -114,7 +111,6 @@ app.post('/api/new-role', ({ body }, res) => {
 
 // add an employee 
 app.post('/api/new-employee', ({ body }, res) => {
-
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
     VALUES (?, ?, ?, ?)`;
     const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
@@ -133,7 +129,6 @@ app.post('/api/new-employee', ({ body }, res) => {
 
 // update an employee role
 app.put('/api/employee/:id', (req, res) => {
-
     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
     const params = [req.body.role_id, req.params.id];
 
@@ -154,6 +149,7 @@ app.put('/api/employee/:id', (req, res) => {
     });
 });
 
+// default for 'not found' request
 app.use((req, res) => {
     res.status(404).end();
 });

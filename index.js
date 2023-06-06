@@ -1,9 +1,13 @@
+// imports
 const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 
+// function to prompt application navigation
 const startApplication = () => {
+    // logo
     console.log('\r\n\u2554\u2550\u2557\u250C\u252C\u2510\u250C\u2500\u2510\u252C  \u250C\u2500\u2510\u252C \u252C\u250C\u2500\u2510\u250C\u2500\u2510\r\n\u2551\u2563 \u2502\u2502\u2502\u251C\u2500\u2518\u2502  \u2502 \u2502\u2514\u252C\u2518\u251C\u2524 \u251C\u2524 \r\n\u255A\u2550\u255D\u2534 \u2534\u2534  \u2534\u2500\u2518\u2514\u2500\u2518 \u2534 \u2514\u2500\u2518\u2514\u2500\u2518\r\n\u2554\u2566\u2557\u252C\u2500\u2510\u250C\u2500\u2510\u250C\u2500\u2510\u252C\u250C\u2500\u250C\u2500\u2510\u252C\u2500\u2510   \r\n \u2551 \u251C\u252C\u2518\u251C\u2500\u2524\u2502  \u251C\u2534\u2510\u251C\u2524 \u251C\u252C\u2518   \r\n \u2569 \u2534\u2514\u2500\u2534 \u2534\u2514\u2500\u2518\u2534 \u2534\u2514\u2500\u2518\u2534\u2514\u2500   \r\n')
+    // navigation prompt
     inquirer.prompt([
         {
             type: 'list',
@@ -21,6 +25,7 @@ const startApplication = () => {
             ],
         }
     ]).then((data) => {
+        // uses switch statment to select one of many functions to be executed
         switch (data.db_nav) {
             case 'View all departments':
                 viewAllDepartments();
@@ -52,6 +57,7 @@ const startApplication = () => {
 
 // view all departments
 const viewAllDepartments = async () => {
+    // database connection
     const db = await mysql.createConnection(
         {
             host: 'localhost',
@@ -61,11 +67,14 @@ const viewAllDepartments = async () => {
         }
     ); 
 
+    // query
     const sql = `SELECT name, id FROM department`;
     const data = await db.query(sql);
 
+    // prints data using console.table package
     console.table([...data[0]]);
 
+    // call start function to reprompt nav
     startApplication();
 };
 
@@ -109,6 +118,7 @@ const viewAllEmployees = async () => {
 
 // add department
 const addDepartment = async () => {
+    // db connection
     const db = await mysql.createConnection(
         {
             host: 'localhost',
@@ -125,17 +135,19 @@ const addDepartment = async () => {
             message: 'What is the name of the department?',
         },
     ];
-
+    // prompt to get value for query
     const department = await inquirer.prompt(question);
 
+    // insert into query
     const sql = `INSERT INTO department (name)
     VALUES (?)`
     const params = [department.name];
-
     await db.query(sql, params);
 
+    // prints new department name in terminal
     console.log(`${department.name} added to employee_db`);
 
+    // call start function to reprompt nav
     startApplication();
 };
 
@@ -177,7 +189,6 @@ const addRole = async () => {
     const sql = `INSERT INTO role (title, salary, department_id)
     VALUES (?, ?, ?)`
     const params = [role.title, role.salary, role.department];
-
     await db.query(sql, params);
     
     console.log(`${role.title} added to employee_db`);
@@ -232,7 +243,6 @@ const addEmployee = async () => {
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
     VALUES (?, ?, ?, ?)`;
     const params = [employee.first_name, employee.last_name, employee.role, employee.manager];
-
     await db.query(sql, params);
     
     console.log(`${employee.first_name} ${employee.last_name} added to employee_db`);
@@ -242,6 +252,7 @@ const addEmployee = async () => {
 
 // update employee role
 const updateEmployee = async () => {
+    // db connection
     const db = await mysql.createConnection(
         {
             host: 'localhost',
@@ -251,9 +262,11 @@ const updateEmployee = async () => {
         }
     );
 
+    // queries db to get employee names for list choices
     const sqlEmployee = await db.query(`SELECT id, first_name, last_name FROM employee`);
     const listEmployees = await sqlEmployee[0].map(({ id, first_name, last_name }) => ({ name: first_name + ' ' + last_name, value: id }));
 
+    // queries db to get role titles for list choices
     const sqlRole = await db.query('SELECT id, title FROM role');
     const listRoles = await sqlRole[0].map(({ id, title }) => ({ name: title, value: id }));
 
@@ -271,22 +284,26 @@ const updateEmployee = async () => {
             choices: listRoles
         },
     ]
-    
+    // prompt to get values for query
     const updateEmployee = await inquirer.prompt(questions);
 
+    // update query
     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
     const params = [updateEmployee.role, updateEmployee.employee];
-
     await db.query(sql, params);
     
+    // prints updated employees id in the terminal
     console.log(`Employee ${updateEmployee.employee}'s role updated`);
 
+    // call start function to reprompt nav
     startApplication();
 };
 
+// function to quit application
 const quitApplication = async () => {
     console.log('You have exited Employee Tracker.');
     process.exit();
 };
 
+// calls start function when application is initiated
 startApplication();
