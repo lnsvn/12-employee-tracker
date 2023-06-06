@@ -17,6 +17,12 @@ Employee Tracker is a command line application that business owner can use to or
 - [License](#license)
 - [Questions](#questions)
 
+## Installation
+
+* Clone repo onto your computer
+* npm install packages (requires node)
+* Fill in your mysql password, if you have one, for database connections
+
 ## Visual
 
 [![](./image/app-demo.png)](https://drive.google.com/file/d/1NRTCc2vodPsNjbFyHbKPlHb24KWZGzCi/view)
